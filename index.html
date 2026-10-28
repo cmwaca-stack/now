@@ -71,6 +71,7 @@
 
         // 장소 이름으로 위치 검색 (OpenStreetMap Nominatim, 제주 범위 안에서만)
         const placeLayer = L.layerGroup().addTo(map)
+        const esc = t => String(t).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;" })[c])
         const findPlace = async () => {
             const q = document.getElementById("q").value.trim()
             const msg = document.getElementById("msg")
@@ -84,7 +85,7 @@
                 if (!r) { msg.textContent = `"${q}" 위치를 찾지 못했어요`; return }
                 const pos = [Number(r.lat), Number(r.lon)]
                 L.circleMarker(pos, { radius: 10, color: "red", fillColor: "red", fillOpacity: 0.6 })
-                    .addTo(placeLayer).bindPopup(`<b>${q}</b><br><small>${r.display_name}</small>`).openPopup()
+                    .addTo(placeLayer).bindPopup(`<b>${esc(q)}</b><br><small>${esc(r.display_name)}</small>`).openPopup()
                 map.flyTo(pos, 14)
                 msg.textContent = `"${q}" 위치를 표시했어요`
             } catch (e) {
