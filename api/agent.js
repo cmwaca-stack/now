@@ -1,8 +1,8 @@
 // api/agent.js — 제주 여행 추천 에이전트 (Vercel 서버리스 함수, POST /api/agent)
 // find_spots(관광지 찾기) · get_weather(날씨)를 AI가 스스로 골라 쓴다.
-// 열쇠는 Vercel 환경변수 ANTHROPIC_API_KEY 에서만 읽는다. 없으면 ‘연습 모드’(정해 둔 순서로 같은 도구 사용).
+// AI 는 Google Gemini API. 열쇠는 Vercel 환경변수 GEMINI_API_KEY 에서만 읽는다. 없으면 ‘연습 모드’(정해 둔 순서로 같은 도구 사용).
 
-const { find_spots, get_weather, TOOLS, runTool, SPOTS, AREAS, AREA_NAMES, areaOf } = require('./tools');
+const { find_spots, get_weather, TOOLS, runTool, SPOTS, AREAS, areaOf } = require('./tools');
 
 const RAIN = 50;          // 판단 규칙: 강수확률 50% 이상이면 실내 위주
 const MAX_TURNS = 5;      // 에이전트 반복은 5번까지
@@ -65,14 +65,21 @@ async function practiceAgent(question) {
   return { mode: 'practice', steps, places, judge, weather: w, tip: '연습 모드(정해 둔 순서) · 방문 전 운영 여부를 확인하세요.' };
 }
 
-async function askClaude(key, messages) {
-  const r = await fetch('https://api.anthropic.com/v1/messages', {
+// Gemini API (generateContent) — 열쇠는 헤더 x-goog-api-key 로만 보낸다
+const MODEL = process.env.GEMINI_MODEL || 'gemini-3.8-flash';
+const FUNCTIONS = [{ functionDeclarations: TOOLS.map(t => ({ name: t.name, description: t.description, parameters: t.input_schema })) }];
+
+async function askGemini(key, contents) {
+  const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`, {
     method: 'POST',
-    headers: { 'x-api-key': key, 'anthropic-version': '2023-06-01', 'content-type': 'application/json' },
-    body: JSON.stringify({ model: process.env.CLAUDE_MODEL || 'claude-haiku-5-5', max_tokens: 800, system: SYSTEM, tools: TOOLS, messages }),
+    headers: { 'x-goog-api-key': key, 'content-type': 'application/json' },
+    body: JSON.stringify({ systemInstruction: { parts: [{ text: SYSTEM }] }, tools: FUNCTIONS, contents }),
   });
-  if (!r.ok) throw new Error('claude ' + r.status);
-  return r.json();
+  if (!r.ok) throw new Error('gemini ' + r.status + ' ' + (await r.text()).slice(0, 200));
+  const j = await r.json();
+  const content = j.candidates && j.candidates[0] && j.candidates[0].content;
+  if (!content) throw new Error('gemini 빈 응답');
+  return content;                                           // { role: 'model', parts: [...] }
 }
 
 module.exports = async (req, res) => {
@@ -80,29 +87,29 @@ module.exports = async (req, res) => {
   const body = req.body || {};
   const question = String(body.question || '').slice(0, 300);
   if (!question.trim()) return res.status(400).json({ error: '질문이 비어 있어요' });
-  const key = process.env.ANTHROPIC_API_KEY;
+  const key = process.env.GEMINI_API_KEY;
   if (!key) return res.status(200).json(await practiceAgent(question));
 
   const steps = [];
-  const messages = [{ role: 'user', content: `질문: ${question}` }];
+  const contents = [{ role: 'user', parts: [{ text: `질문: ${question}` }] }];
   let weather = null;
   try {
     for (let turn = 0; turn < MAX_TURNS; turn++) {          // 에이전트 반복: 도구 고르기 → 결과 보기 → 다시 판단
-      const r = await askClaude(key, messages);
-      if (r.stop_reason === 'tool_use') {
-        messages.push({ role: 'assistant', content: r.content });
+      const r = await askGemini(key, contents);
+      const calls = (r.parts || []).filter(p => p.functionCall);
+      if (calls.length) {
+        contents.push(r);                                   // 모델 응답 전체를 그대로 되돌려 보낸다 (thought signature 유지)
         const results = [];
-        for (const b of r.content) {
-          if (b.type !== 'tool_use') continue;
-          const out = await runTool(b.name, b.input);
-          if (b.name === 'get_weather') weather = out;
-          steps.push({ kind: 'find', text: toolStep(b.name, b.input || {}, out) });
-          results.push({ type: 'tool_result', tool_use_id: b.id, content: JSON.stringify(out) });
+        for (const { functionCall: f } of calls) {
+          const out = await runTool(f.name, f.args);
+          if (f.name === 'get_weather') weather = out;
+          steps.push({ kind: 'find', text: toolStep(f.name, f.args || {}, out) });
+          results.push({ functionResponse: { name: f.name, response: out } });
         }
-        messages.push({ role: 'user', content: results });
+        contents.push({ role: 'user', parts: results });
         continue;
       }
-      const text = (r.content || []).map(c => c.text || '').join('');
+      const text = (r.parts || []).map(p => p.text || '').join('');
       let out;
       try { out = JSON.parse(text.slice(text.indexOf('{'), text.lastIndexOf('}') + 1)); }
       catch (e) { return res.status(200).json({ mode: 'ai', steps, text }); }
@@ -113,6 +120,7 @@ module.exports = async (req, res) => {
     }
     return res.status(200).json({ mode: 'ai', steps, text: '도구를 너무 여러 번 써서 멈췄어요. 질문을 조금 더 구체적으로 해 주세요.' });
   } catch (e) {
+    console.error(e.message);                               // Vercel 함수 로그에서 원인 확인
     const p = await practiceAgent(question);                // AI 연결이 안 되면 연습 모드로
     return res.status(200).json({ ...p, mode: 'error', tip: '잠시 AI 연결이 안 돼 연습 모드로 답했어요.' });
   }
