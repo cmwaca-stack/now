@@ -1,0 +1,62 @@
+window.JEJU_TOPICS = {
+  "region": "제주특별자치도",
+  "topic": "제주 데이터 주제별 소개",
+  "items": [
+    { "name": "설문대할망", "category": "창세·건국 신화", "description": "치마폭에 흙을 날라 한라산을 만들었다는 제주 창조의 거인 여신", "icon": "👵", "image": "", "source": "AI claude" },
+    { "name": "오백장군", "category": "창세·건국 신화", "description": "설문대할망의 아들 500명이 바위(영실기암)가 되었다는 전설", "icon": "🪨", "image": "", "source": "AI claude" },
+    { "name": "천지왕본풀이", "category": "창세·건국 신화", "description": "하늘과 땅이 열리고 해와 달이 둘씩 있던 세상을 바로잡는 창세 신화", "icon": "☀️", "image": "", "source": "AI claude" },
+    { "name": "대별왕·소별왕", "category": "창세·건국 신화", "description": "천지왕의 아들로, 동생이 속임수로 이승을 차지해 세상에 악이 생겼다는 이야기", "icon": "🌗", "image": "", "source": "AI claude" },
+    { "name": "삼성혈(삼을나)", "category": "창세·건국 신화", "description": "고을나·양을나·부을나 세 신인이 땅에서 솟아 탐라를 열었다는 건국 신화", "icon": "🕳️", "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/23/Three_sacred_holes_in_Jeju.JPG/330px-Three_sacred_holes_in_Jeju.JPG", "source": "AI claude" },
+    { "name": "벽랑국 세 공주", "category": "창세·건국 신화", "description": "바다 건너 목함을 타고 와 오곡 씨앗과 가축을 전하고 삼신인과 혼인한 공주들", "icon": "🚢", "image": "", "source": "AI claude" },
+    { "name": "자청비(세경본풀이)", "category": "창세·건국 신화", "description": "문도령과의 사랑 끝에 오곡 씨앗을 가져와 농경신이 된 여신", "icon": "🌾", "image": "", "source": "AI claude" },
+    { "name": "이공본풀이", "category": "창세·건국 신화", "description": "한락궁이가 서천꽃밭의 환생꽃으로 어머니를 살리는 이야기", "icon": "🌺", "image": "", "source": "AI claude" },
+    { "name": "차사본풀이(강림차사)", "category": "저승·운명 이야기", "description": "강림이 저승의 염라대왕을 잡아 와 저승차사가 된 이야기", "icon": "🏮", "image": "", "source": "AI claude" },
+    { "name": "원천강본풀이(오늘이)", "category": "저승·운명 이야기", "description": "부모를 찾아 원천강으로 떠나는 소녀 오늘이의 여정", "icon": "🧒", "image": "", "source": "AI claude" },
+
+    { "name": "백주또", "category": "신", "description": "송당 본향당의 여신으로 제주 당신앙의 뿌리로 꼽히는 신", "icon": "👸", "image": "", "source": "AI claude" },
+    { "name": "소천국", "category": "신", "description": "사냥과 농경을 맡은 송당 본향신으로 백주또의 남편", "icon": "🏹", "image": "", "source": "AI claude" },
+    { "name": "궤네깃또", "category": "신", "description": "소천국과 백주또의 아들로 여러 마을의 본향신으로 모셔지는 신", "icon": "🛕", "image": "", "source": "AI claude" },
+    { "name": "영등할망", "category": "신", "description": "음력 2월에 바람과 함께 와서 바다에 씨앗을 뿌리고 가는 바람의 여신", "icon": "🌬️", "image": "", "source": "AI claude" },
+    { "name": "용왕(해신)", "category": "신", "description": "바다와 어부·해녀의 안전을 지켜 주는 바다의 신", "icon": "🐉", "image": "", "source": "AI claude" },
+    { "name": "삼승할망", "category": "신", "description": "아기를 점지하고 출산과 성장을 돌보는 산신(産神)", "icon": "👶", "image": "", "source": "AI claude" },
+    { "name": "저승할망", "category": "신", "description": "아기에게 병을 주기도 하는 신(구삼승할망)으로 삼승할망과 대비됨", "icon": "🌑", "image": "", "source": "AI claude" },
+    { "name": "문전신", "category": "신", "description": "문전본풀이의 주인공으로 집의 문을 지키는 신", "icon": "🚪", "image": "", "source": "AI claude" },
+    { "name": "조왕할망", "category": "신", "description": "부엌의 불과 음식을 지키는 신", "icon": "🔥", "image": "", "source": "AI claude" },
+    { "name": "성주신", "category": "신", "description": "집 전체의 안녕을 지키는 집안의 수호신", "icon": "🏠", "image": "", "source": "AI claude" },
+    { "name": "한라산 산신", "category": "신", "description": "한라산을 다스린다고 믿어 산신제를 올리던 산의 신", "icon": "🏔️", "image": "", "source": "AI claude" },
+    { "name": "마라도 애기업개", "category": "신", "description": "마라도 신당에 모셔진 신으로, 바다에 바쳐졌다는 아기 돌보던 처녀의 전설", "icon": "🌊", "image": "", "source": "AI claude" },
+
+    { "name": "칠성(뱀신)", "category": "정령·민속신앙", "description": "집과 재물을 지켜 준다고 믿어 함부로 해치지 않던 뱀 신앙", "icon": "🐍", "image": "", "source": "AI claude" },
+    { "name": "도채비(도깨비)", "category": "정령·민속신앙", "description": "제주 도깨비로 장난꾸러기이면서 부를 가져다준다고 여긴 존재", "icon": "👹", "image": "", "source": "AI claude" },
+    { "name": "돌하르방", "category": "정령·민속신앙", "description": "성 앞에서 액을 막고 경계를 지키던 제주의 돌 수호상", "icon": "🗿", "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a2/Dolhareubang_of_Gwandeokjeong_2.JPG/330px-Dolhareubang_of_Gwandeokjeong_2.JPG", "source": "AI claude" },
+
+    { "name": "한라산", "category": "자연·전설의 장소", "description": "제주 한가운데 솟은 화산으로 신들의 산이자 섬의 상징", "icon": "🌋", "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/eb/KOCIS_Halla_Mountain_in_Jeju-do_%286387785543%29.jpg/330px-KOCIS_Halla_Mountain_in_Jeju-do_%286387785543%29.jpg", "source": "AI claude" },
+    { "name": "백록담", "category": "자연·전설의 장소", "description": "신선이 흰 사슴을 타고 놀았다는 한라산 정상의 화구호", "icon": "🦌", "image": "", "source": "AI claude" },
+    { "name": "산방산", "category": "자연·전설의 장소", "description": "한라산 봉우리가 뽑혀 날아와 생겼다는 전설이 얽힌 바위산(산방덕이 전설)", "icon": "⛰️", "image": "", "source": "AI claude" },
+    { "name": "용머리해안", "category": "자연·전설의 장소", "description": "용이 바다로 나가려다 굳었다는 전설의 해안 절벽", "icon": "🐲", "image": "", "source": "AI claude" },
+    { "name": "성산일출봉", "category": "자연·전설의 장소", "description": "바닷속 화산 폭발로 생긴 수성화산으로 일출 명소", "icon": "🌅", "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e3/%EC%84%B1%EC%82%B0%EC%9D%BC%EC%B6%9C%EB%B4%89_%EC%B2%9C%EC%97%B0%EB%B3%B4%ED%98%B8%EA%B5%AC%EC%97%AD_2019%EB%85%84_%EC%B4%AC%EC%98%81%28%EC%B6%9C%EC%B2%98_%EB%AC%B8%ED%99%94%EC%9E%AC%EC%B2%AD_%EB%8C%80%EB%B3%80%EC%9D%B8%EC%8B%A4%29.jpg/330px-%EC%84%B1%EC%82%B0%EC%9D%BC%EC%B6%9C%EB%B4%89_%EC%B2%9C%EC%97%B0%EB%B3%B4%ED%98%B8%EA%B5%AC%EC%97%AD_2019%EB%85%84_%EC%B4%AC%EC%98%81%28%EC%B6%9C%EC%B2%98_%EB%AC%B8%ED%99%94%EC%9E%AC%EC%B2%AD_%EB%8C%80%EB%B3%80%EC%9D%B8%EC%8B%A4%29.jpg", "source": "AI claude" },
+    { "name": "거문오름·용암동굴", "category": "자연·전설의 장소", "description": "만장굴 등 용암동굴을 만든 화산으로 세계자연유산에 속함", "icon": "🦇", "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/af/%EA%B1%B0%EB%AC%B8%EC%98%A4%EB%A6%84.jpg/330px-%EA%B1%B0%EB%AC%B8%EC%98%A4%EB%A6%84.jpg", "source": "AI claude" },
+    { "name": "방선문", "category": "자연·전설의 장소", "description": "신선이 노닐었다고 전하는 계곡 바위 문으로 옛 시인들이 시를 남긴 곳", "icon": "🧚", "image": "", "source": "AI claude" },
+    { "name": "곶자왈", "category": "자연·전설의 장소", "description": "화산암 위에 원시림이 자란 숲으로 지하수를 만드는 곳", "icon": "🌳", "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a1/%EA%B3%B6%EC%9E%90%EC%99%88_%EC%A0%84%EA%B2%BD.jpg/330px-%EA%B3%B6%EC%9E%90%EC%99%88_%EC%A0%84%EA%B2%BD.jpg", "source": "AI claude" },
+    { "name": "오름", "category": "자연·전설의 장소", "description": "제주 곳곳의 작은 기생화산으로 신당과 마을이 함께 있는 곳", "icon": "🏞️", "image": "", "source": "AI claude" },
+
+    { "name": "탐라국", "category": "역사", "description": "육지와 따로 존재하던 고대 제주의 독립 왕국", "icon": "👑", "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f0/Tamna.png/330px-Tamna.png", "source": "AI claude" },
+    { "name": "삼별초 항파두리성", "category": "역사", "description": "몽골에 맞서 삼별초가 마지막까지 항전한 유적", "icon": "🏯", "image": "", "source": "AI claude" },
+    { "name": "몽골 목마장", "category": "역사", "description": "원나라 지배기에 말 목장이 세워지며 제주 말 문화가 자리 잡은 계기", "icon": "🐎", "image": "", "source": "AI claude" },
+    { "name": "하멜 표류", "category": "역사", "description": "1653년 네덜란드 상인 하멜 일행이 제주에 표착한 사건", "icon": "⛵", "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/59/Gorinchem_kunstwerk_hendrick_hamel.jpg/330px-Gorinchem_kunstwerk_hendrick_hamel.jpg", "source": "AI claude" },
+    { "name": "김만덕", "category": "역사", "description": "1795년 흉년에 재산을 내어 백성을 구한 제주 여성 상인", "icon": "🍚", "image": "", "source": "AI claude" },
+    { "name": "추사 김정희 유배", "category": "역사", "description": "1840년대 제주에 유배되어 「세한도」를 남긴 서예가", "icon": "🖌️", "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/36/Kim_Jeong-hui.jpg/330px-Kim_Jeong-hui.jpg", "source": "AI claude" },
+    { "name": "제주 4·3", "category": "역사", "description": "1948년 4월 3일에 시작되어 제주 사회에 큰 상처를 남긴 사건", "icon": "🕊️", "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/56/Darangshi_cave_in_Jeju.jpg/330px-Darangshi_cave_in_Jeju.jpg", "source": "AI claude" },
+    { "name": "해녀항일운동", "category": "역사", "description": "1932년 해녀들이 일제의 수탈에 맞서 일으킨 항일 운동", "icon": "✊", "image": "", "source": "AI claude" },
+
+    { "name": "해녀 문화", "category": "문화·생활", "description": "숨을 참고 바다에서 채취하는 여성 공동체 문화로 유네스코 인류무형유산(2016)", "icon": "🤿", "image": "", "source": "AI claude" },
+    { "name": "칠머리당 영등굿", "category": "문화·생활", "description": "영등할망을 맞이해 바다의 안전과 풍어를 비는 제주 대표 굿(유네스코 2009)", "icon": "🥁", "image": "", "source": "AI claude" },
+    { "name": "본향당(신당)", "category": "문화·생활", "description": "마을마다 수호신을 모시고 주민이 정성을 올리는 제주 고유의 신당", "icon": "🛖", "image": "", "source": "AI claude" },
+    { "name": "제주어", "category": "문화·생활", "description": "육지 말과 많이 달라 유네스코가 소멸위기 언어로 분류한 제주 고유의 말", "icon": "💬", "image": "", "source": "AI claude" },
+    { "name": "정낭", "category": "문화·생활", "description": "대문 대신 나무 막대 세 개를 걸쳐 주인의 부재를 알리는 제주 특유의 문", "icon": "🪵", "image": "", "source": "AI claude" },
+    { "name": "밭담·돌담", "category": "문화·생활", "description": "현무암을 쌓아 바람을 막고 밭 경계를 짓던 담으로 세계중요농업유산(2013)", "icon": "🧱", "image": "", "source": "AI claude" },
+    { "name": "갈옷", "category": "문화·생활", "description": "풋감 즙으로 물들여 땀과 더위에 강한 제주 전통 옷", "icon": "👘", "image": "", "source": "AI claude" },
+    { "name": "삼다·삼무", "category": "문화·생활", "description": "돌·바람·여자가 많고 도둑·거지·대문이 없다는 제주의 상징", "icon": "🍃", "image": "", "source": "AI claude" }
+  ]
+}
+;
