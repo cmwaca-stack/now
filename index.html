@@ -9,6 +9,7 @@
         * { box-sizing: border-box; }
         body { margin: 0; font-family: "Segoe UI", "Malgun Gothic", sans-serif; background: #0b0f1a; color: #e8ecf5; }
         #map { position: fixed; inset: 0; background: #0b0f1a; }
+        .dark-tiles { filter: invert(1) hue-rotate(180deg) brightness(.85) contrast(.9) saturate(.6); }
         .panel { position: absolute; z-index: 1000; background: rgba(11,15,26,.88); backdrop-filter: blur(6px);
                  border: 1px solid #263049; border-radius: 12px; padding: 12px 14px; box-shadow: 0 8px 30px rgba(0,0,0,.5); }
         #top { top: 12px; left: 56px; right: 12px; max-width: 760px; display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }
@@ -64,9 +65,10 @@
         const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))
 
         const map = L.map("map", { worldCopyJump: true, minZoom: 2 }).setView([20, 20], 2)
-        L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
-            attribution: "&copy; OpenStreetMap contributors &copy; CARTO | 지진 데이터: USGS",
-            subdomains: "abcd", maxZoom: 18,
+        // OpenStreetMap 기본 타일(키 불필요). 어두운 화면은 아래 CSS 필터(.dark-tiles)로 만든다
+        L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+            attribution: "&copy; OpenStreetMap contributors | 지진 데이터: USGS",
+            maxZoom: 18, className: "dark-tiles",
         }).addTo(map)
         const layer = L.layerGroup().addTo(map)
 
