@@ -3,120 +3,109 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>전 세계 실시간 지진 지도</title>
+    <title>제주 여행 추천 에이전트</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css">
     <style>
         * { box-sizing: border-box; }
-        body { margin: 0; font-family: "Segoe UI", "Malgun Gothic", sans-serif; background: #0b0f1a; color: #e8ecf5; }
-        #map { position: fixed; inset: 0; background: #0b0f1a; }
-        .dark-tiles { filter: invert(1) hue-rotate(180deg) brightness(.85) contrast(.9) saturate(.6); }
-        .panel { position: absolute; z-index: 1000; background: rgba(11,15,26,.88); backdrop-filter: blur(6px);
-                 border: 1px solid #263049; border-radius: 12px; padding: 12px 14px; box-shadow: 0 8px 30px rgba(0,0,0,.5); }
-        #top { top: 12px; left: 56px; right: 12px; max-width: 760px; display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }
-        #top h1 { font-size: 16px; margin: 0; background: linear-gradient(90deg,#ff5a5f,#ffb347); -webkit-background-clip: text; color: transparent; }
-        #top label { font-size: 12px; color: #9fb0d0; display: flex; align-items: center; gap: 6px; }
-        select, input[type=range] { accent-color: #ff5a5f; }
-        select { background: #151c2e; color: #e8ecf5; border: 1px solid #263049; border-radius: 6px; padding: 4px 6px; }
-        #stats { font-size: 12px; color: #9fb0d0; }
-        #stats b { color: #ffb347; }
-        #list { bottom: 24px; left: 12px; width: 290px; max-height: 38vh; overflow-y: auto; }
-        #list h2 { font-size: 13px; margin: 0 0 8px; color: #9fb0d0; }
-        .item { display: flex; gap: 8px; align-items: center; padding: 6px 4px; border-radius: 6px; cursor: pointer; font-size: 12px; }
-        .item:hover { background: #1a2338; }
-        .mag { min-width: 38px; text-align: center; font-weight: 700; border-radius: 6px; padding: 2px 0; color: #0b0f1a; }
-        .item small { color: #7d8db0; display: block; }
-        #legend { bottom: 24px; right: 12px; font-size: 11px; color: #9fb0d0; }
-        #legend i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin: 0 4px 0 8px; }
-        .pulse { width: 30px; height: 30px; border-radius: 50%; border: 2px solid var(--c); animation: pulse 1.8s ease-out infinite; }
-        @keyframes pulse { 0% { transform: scale(.3); opacity: 1; } 100% { transform: scale(2.4); opacity: 0; } }
-        .leaflet-popup-content-wrapper, .leaflet-popup-tip { background: #151c2e; color: #e8ecf5; }
-        .leaflet-popup-content a { color: #ffb347; }
-        @media (max-width: 600px) { #list { display: none; } #top { left: 12px; } }
+        body { margin: 0; font-family: "Segoe UI", "Malgun Gothic", sans-serif; display: flex; height: 100vh; color: #1f2937; }
+        #side { width: 380px; max-width: 45vw; overflow-y: auto; padding: 16px; background: #f4f8f7; border-right: 1px solid #d6e2df; }
+        #map { flex: 1; }
+        h1 { font-size: 18px; margin: 0 0 4px; color: #0f766e; }
+        .sub { font-size: 12px; color: #6b7280; margin-bottom: 12px; }
+        textarea { width: 100%; height: 72px; padding: 8px; border: 1px solid #b7cdc8; border-radius: 8px; font: inherit; resize: vertical; }
+        button { background: #0f766e; color: #fff; border: 0; border-radius: 8px; padding: 8px 14px; font: inherit; cursor: pointer; }
+        button:disabled { background: #9ab5b0; cursor: wait; }
+        .chips { margin: 8px 0; display: flex; flex-wrap: wrap; gap: 6px; }
+        .chips span { font-size: 12px; background: #e0efec; border-radius: 12px; padding: 4px 10px; cursor: pointer; }
+        .chips span:hover { background: #cfe5e0; }
+        .card { background: #fff; border: 1px solid #d6e2df; border-radius: 10px; padding: 10px 12px; margin-top: 10px; font-size: 13px; }
+        .card h3 { margin: 0 0 6px; font-size: 13px; color: #0f766e; }
+        .step { padding: 3px 0; }
+        .place { cursor: pointer; padding: 6px 0; border-top: 1px solid #eef3f2; }
+        .place:first-of-type { border-top: 0; }
+        .place b { font-size: 14px; }
+        .tag { font-size: 11px; border-radius: 6px; padding: 1px 6px; background: #fde68a; margin-left: 4px; }
+        .tag.in { background: #bfdbfe; }
+        .warn { color: #b45309; }
+        @media (max-width: 700px) { body { flex-direction: column-reverse; } #side { width: 100%; max-width: none; height: 55vh; } #map { height: 45vh; flex: none; } }
     </style>
 </head>
 <body>
+    <div id="side">
+        <h1>🏝️ 제주 여행 추천 에이전트</h1>
+        <div class="sub">AI가 관광지 찾기(find_spots)와 날씨 보기(get_weather) 도구를 스스로 골라 써서 추천해요.</div>
+        <textarea id="q" placeholder="예) 내일 서쪽에서 비 와도 갈 만한 곳 추천해줘"></textarea>
+        <div class="chips" id="chips">
+            <span>내일 동쪽에서 갈 만한 곳</span>
+            <span>오늘 서귀포 비 와도 괜찮은 곳</span>
+            <span>제주시 근처 실내 데이트</span>
+        </div>
+        <button id="ask">물어보기</button>
+        <div id="out"></div>
+    </div>
     <div id="map"></div>
-
-    <div id="top" class="panel">
-        <h1>🌍 전 세계 실시간 지진</h1>
-        <label>기간
-            <select id="period">
-                <option value="all_hour">지난 1시간</option>
-                <option value="all_day" selected>지난 24시간</option>
-                <option value="2.5_week">지난 7일 (규모 2.5+)</option>
-            </select>
-        </label>
-        <label>최소 규모 <input id="minMag" type="range" min="0" max="7" step="0.5" value="0"> <b id="minMagVal">0</b></label>
-        <span id="stats">불러오는 중...</span>
-    </div>
-
-    <div id="list" class="panel"><h2>강한 지진 TOP 10</h2><div id="items"></div></div>
-
-    <div id="legend" class="panel">규모
-        <i style="background:#4ade80"></i>~3 <i style="background:#facc15"></i>3~4.5
-        <i style="background:#fb923c"></i>4.5~6 <i style="background:#ef4444"></i>6+
-    </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
     <script>
-        // 데이터: USGS 지진 GeoJSON 피드 (API 키 불필요) — 1분마다 갱신
-        const FEED = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/"
         const $ = id => document.getElementById(id)
-        const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))
+        const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))
 
-        const map = L.map("map", { worldCopyJump: true, minZoom: 2 }).setView([20, 20], 2)
-        // OpenStreetMap 기본 타일(키 불필요). 어두운 화면은 아래 CSS 필터(.dark-tiles)로 만든다
+        const map = L.map("map").setView([33.38, 126.55], 10)
         L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
-            attribution: "&copy; OpenStreetMap contributors | 지진 데이터: USGS",
-            maxZoom: 18, className: "dark-tiles",
+            attribution: "&copy; OpenStreetMap contributors", maxZoom: 18,
         }).addTo(map)
         const layer = L.layerGroup().addTo(map)
 
-        const color = m => m >= 6 ? "#ef4444" : m >= 4.5 ? "#fb923c" : m >= 3 ? "#facc15" : "#4ade80"
-        let quakes = []
+        document.querySelectorAll("#chips span").forEach(c => c.onclick = () => { $("q").value = c.textContent; ask() })
 
-        const render = () => {
-            const min = Number($("minMag").value)
-            $("minMagVal").textContent = min
-            const list = quakes.filter(q => q.properties.mag !== null && q.properties.mag >= min)
+        const ask = async () => {
+            const question = $("q").value.trim()
+            if (!question) return
+            $("ask").disabled = true
+            $("out").innerHTML = `<div class="card">도구를 고르는 중...</div>`
             layer.clearLayers()
-            const hourAgo = Date.now() - 3600 * 1000
-            // 약한 지진부터 그려서 강한 지진이 위에 오도록
-            list.slice().sort((a, b) => a.properties.mag - b.properties.mag).forEach(q => {
-                const [lon, lat] = q.geometry.coordinates, p = q.properties, c = color(p.mag)
-                L.circleMarker([lat, lon], { radius: Math.max(3, p.mag * 3), color: c, weight: 1, fillColor: c, fillOpacity: .45 })
-                    .addTo(layer)
-                    .bindPopup(`<b>규모 ${p.mag}</b><br>${esc(p.place || "")}<br>${new Date(p.time).toLocaleString("ko-KR")}` +
-                        `<br>깊이 ${Math.round(q.geometry.coordinates[2])}km<br><a href="${esc(p.url)}" target="_blank" rel="noopener">USGS 상세</a>`)
-                if (p.time > hourAgo)   // 1시간 이내 지진은 퍼지는 파동 표시
-                    L.marker([lat, lon], { interactive: false, icon: L.divIcon({ className: "", iconSize: [30, 30], iconAnchor: [15, 15],
-                        html: `<div class="pulse" style="--c:${c}"></div>` }) }).addTo(layer)
-            })
-            const top = list.slice().sort((a, b) => b.properties.mag - a.properties.mag)
-            $("stats").innerHTML = `<b>${list.length}</b>건 · 최대 규모 <b>${top.length ? top[0].properties.mag : "-"}</b>`
-            $("items").innerHTML = top.slice(0, 10).map((q, i) =>
-                `<div class="item" data-i="${i}"><span class="mag" style="background:${color(q.properties.mag)}">${q.properties.mag}</span>` +
-                `<span>${esc(q.properties.place || "")}<small>${new Date(q.properties.time).toLocaleString("ko-KR")}</small></span></div>`).join("")
-            document.querySelectorAll(".item").forEach(el => el.onclick = () => {
-                const [lon, lat] = top[el.dataset.i].geometry.coordinates
-                map.flyTo([lat, lon], 5)
-            })
-        }
-
-        const load = async () => {
             try {
-                const r = await fetch(FEED + $("period").value + ".geojson")
+                const r = await fetch("/api/agent", {
+                    method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ question }),
+                })
                 if (!r.ok) throw new Error(r.status)
-                quakes = (await r.json()).features
-                render()
+                show(await r.json())
             } catch (e) {
-                $("stats").textContent = "데이터를 불러오지 못했어요 (잠시 후 다시 시도)"
+                $("out").innerHTML = `<div class="card warn">에이전트 서버(/api/agent)에 연결하지 못했어요. 배포된(Vercel) 주소에서 열어 주세요.</div>`
             }
+            $("ask").disabled = false
         }
-        $("period").onchange = load
-        $("minMag").oninput = render
-        load()
-        setInterval(load, 60000)
+        $("ask").onclick = ask
+
+        const show = d => {
+            let html = ""
+            if (d.steps && d.steps.length)
+                html += `<div class="card"><h3>🔍 에이전트가 한 일</h3>${d.steps.map(s => `<div class="step">• ${esc(s.text)}</div>`).join("")}</div>`
+            if (d.weather && d.weather.ok)
+                html += `<div class="card"><h3>☁️ 날씨</h3>${esc(d.weather.area)} ${esc(d.weather.day)} · 강수확률 ${esc(d.weather.rain_prob)}% · 최고 ${esc(d.weather.tmax)}℃</div>`
+            if (d.places && d.places.length) {
+                html += `<div class="card"><h3>📍 추천 장소</h3>${d.places.map((p, i) =>
+                    `<div class="place" data-i="${i}"><b>${esc(p.name)}</b>` +
+                    (p.inList ? `<span class="tag in">${p.indoor ? "실내" : "야외"}</span>` : `<span class="tag">목록에 없음 ⚠</span>`) +
+                    `<div>${esc(p.why)}</div></div>`).join("")}</div>`
+                if (d.judge) html += `<div class="card"><h3>🧭 판단</h3>${esc(d.judge)}</div>`
+            }
+            if (d.text) html += `<div class="card">${esc(d.text)}</div>`
+            if (d.tip) html += `<div class="card sub">${esc(d.tip)}</div>`
+            $("out").innerHTML = html
+
+            const pts = []
+            ;(d.places || []).forEach((p, i) => {
+                if (!p.lat) return
+                L.marker([p.lat, p.lon]).addTo(layer).bindPopup(`<b>${esc(p.name)}</b><br>${esc(p.why)}`)
+                pts.push([p.lat, p.lon])
+            })
+            if (pts.length) map.flyToBounds(pts, { maxZoom: 11, padding: [60, 60] })
+            document.querySelectorAll(".place").forEach(el => el.onclick = () => {
+                const p = d.places[el.dataset.i]
+                if (p.lat) map.flyTo([p.lat, p.lon], 12)
+            })
+        }
     </script>
 </body>
 </html>
