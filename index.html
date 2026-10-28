@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>제주 관광지 지도</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css">
+    <style>
+        body { margin: 0; font-family: sans-serif; }
+        #bar { padding: 8px 12px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+        #map { height: calc(100vh - 52px); }
+    </style>
+</head>
+<body>
+    <div id="bar">
+        지역
+        <select id="area">
+            <option>동쪽</option><option>서쪽</option><option>서귀포</option><option>제주시</option>
+        </select>
+        실내/야외
+        <select id="indoor">
+            <option value="">전체</option><option value="true">실내</option><option value="false">야외</option>
+        </select>
+        <button id="go">찾기</button>
+        <input id="q" placeholder="장소 검색 (예: 성산일출봉)">
+        <button id="find">위치 검색</button>
+        <span id="msg"></span>
+    </div>
+    <div id="map"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+    <script src="jeju_spots.js"></script> <!-- jeju_spots.json 을 window.JEJU 로 담은 파일 -->
+    <script>
+        const SPOTS = window.JEJU.spots
+        // 지역 중심점 (위도, 경도)
+        const CENTER = {
+            "동쪽": [33.46, 126.88],
+            "서쪽": [33.36, 126.30],
+            "서귀포": [33.25, 126.56],
+            "제주시": [33.51, 126.52],
+        }
+        // tools.js 의 find_spots 와 같은 규칙: 지역(괄호 세부지역 포함) · 실내/야외 · 최대 8곳
+        const find_spots = ({ area, indoor }) => {
+            let list = SPOTS.filter(s => s.area === area || s.area.startsWith(area + "("))
+            if (indoor === true || indoor === false) list = list.filter(s => s.indoor === indoor)
+            return { count: list.length, spots: list.slice(0, 8) }
+        }
+
+        const map = L.map("map").setView([33.38, 126.55], 10)
+        L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+            attribution: "&copy; OpenStreetMap contributors", maxZoom: 18,
+        }).addTo(map)
+        const layer = L.layerGroup().addTo(map)
+
+        const search = () => {
+            const area = document.getElementById("area").value
+            const v = document.getElementById("indoor").value
+            const indoor = v === "" ? undefined : v === "true"
+            const { count, spots } = find_spots({ area, indoor })
+
+            layer.clearLayers()
+            document.getElementById("msg").textContent = `${area} ${count}곳 (최대 8곳 표시)`
+            if (count === 0) return
+            const html = `<b>${area}</b> ${count}곳<ul style="padding-left:18px;margin:4px 0">` +
+                spots.map(s => `<li>${s.name} (${s.indoor ? "실내" : "야외"}) <small>${s.type || ""}</small></li>`).join("") + "</ul>"
+            L.marker(CENTER[area]).addTo(layer).bindPopup(html).openPopup()
+            map.flyTo(CENTER[area], 11)
+        }
+        document.getElementById("go").onclick = search
+        search()
+
+        // 장소 이름으로 위치 검색 (OpenStreetMap Nominatim, 제주 범위 안에서만)
+        const placeLayer = L.layerGroup().addTo(map)
+        const findPlace = async () => {
+            const q = document.getElementById("q").value.trim()
+            const msg = document.getElementById("msg")
+            if (!q) return
+            msg.textContent = "검색 중..."
+            try {
+                const url = "https://nominatim.openstreetmap.org/search?format=json&limit=1&accept-language=ko" +
+                    "&viewbox=126.1,33.6,127.0,33.1&bounded=1&q=" + encodeURIComponent(q)
+                const r = (await (await fetch(url)).json())[0]
+                placeLayer.clearLayers()
+                if (!r) { msg.textContent = `"${q}" 위치를 찾지 못했어요`; return }
+                const pos = [Number(r.lat), Number(r.lon)]
+                L.circleMarker(pos, { radius: 10, color: "red", fillColor: "red", fillOpacity: 0.6 })
+                    .addTo(placeLayer).bindPopup(`<b>${q}</b><br><small>${r.display_name}</small>`).openPopup()
+                map.flyTo(pos, 14)
+                msg.textContent = `"${q}" 위치를 표시했어요`
+            } catch (e) {
+                msg.textContent = "위치 검색에 실패했어요"
+            }
+        }
+        document.getElementById("find").onclick = findPlace
+        document.getElementById("q").onkeydown = e => { if (e.key === "Enter") findPlace() }
+    </script>
+</body>
+</html>
