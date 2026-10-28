@@ -41,7 +41,7 @@ function toolStep(name, input, out) {            // ‘생각 과정’에 보�
     return `관광지 찾기 — ${out.area}${input.indoor === true ? ' 실내' : input.indoor === false ? ' 야외' : ''} ${out.count}곳`;
   }
   if (name === 'get_weather')
-    return out.ok ? `날씨 보기 — ${out.area} ${out.day} 강수확률 ${out.rain_prob}% · 최고 ${out.tmax}℃ (${out.source})` : `날씨 보기 — ${out.note}`;
+    return out.ok ? `날씨 보기 — ${out.area} ${out.day} ${out.sky} · 강수확률 ${out.rain_prob}% · ${out.tmin}~${out.tmax}℃ (${out.source})` : `날씨 보기 — ${out.note}`;
   return name;
 }
 

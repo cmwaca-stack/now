@@ -32,17 +32,29 @@ function find_spots({ area, indoor } = {}) {
   };
 }
 
-// ── 도구 ② 날씨 보기 (Open-Meteo 예보, 키 없음) ──
+// ── 도구 ② 날씨 보기 (Open-Meteo Forecast API, 키 없음 — https://open-meteo.com/en/docs) ──
+// WMO 날씨 코드 → 한글 (docs 의 WMO Weather interpretation codes)
+const WMO = { 0: '맑음', 1: '대체로 맑음', 2: '구름 조금', 3: '흐림', 45: '안개', 48: '서리 안개',
+  51: '약한 이슬비', 53: '이슬비', 55: '강한 이슬비', 56: '약한 어는 이슬비', 57: '어는 이슬비',
+  61: '약한 비', 63: '비', 65: '강한 비', 66: '약한 어는 비', 67: '강한 어는 비',
+  71: '약한 눈', 73: '눈', 75: '강한 눈', 77: '싸락눈', 80: '약한 소나기', 81: '소나기', 82: '강한 소나기',
+  85: '약한 눈 소나기', 86: '강한 눈 소나기', 95: '뇌우', 96: '우박 동반 뇌우', 97: '강한 뇌우', 99: '강한 우박 동반 뇌우' };
+
 async function get_weather({ area, day } = {}) {
   const c = AREAS[area] || AREAS['제주시'], i = day === '내일' ? 1 : 0;
   const url = `https://api.open-meteo.com/v1/forecast?latitude=${c[0]}&longitude=${c[1]}` +
-    '&daily=precipitation_probability_max,temperature_2m_max&timezone=Asia%2FSeoul&forecast_days=2';
+    '&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,wind_speed_10m_max' +
+    '&timezone=Asia%2FSeoul&forecast_days=2';
   try {
     const r = await fetch(url);
     if (!r.ok) throw new Error('weather ' + r.status);
-    const j = await r.json();
-    return { ok: true, area: area || '제주시', day: day || '오늘', date: j.daily.time[i],
-      rain_prob: j.daily.precipitation_probability_max[i], tmax: Math.round(j.daily.temperature_2m_max[i]), source: 'Open-Meteo 예보' };
+    const d = (await r.json()).daily;
+    return { ok: true, area: area || '제주시', day: day || '오늘', date: d.time[i],
+      sky: WMO[d.weather_code[i]] || '알 수 없음',
+      rain_prob: d.precipitation_probability_max[i],
+      tmax: Math.round(d.temperature_2m_max[i]), tmin: Math.round(d.temperature_2m_min[i]),
+      wind: Math.round(d.wind_speed_10m_max[i]),            // 일 최대 풍속 (km/h)
+      source: 'Open-Meteo 예보' };
   } catch (e) {
     return { ok: false, area, day, note: '날씨를 가져오지 못했어요' };
   }
@@ -64,7 +76,7 @@ const TOOLS = [
   },
   {
     name: 'get_weather',
-    description: '그 지역의 오늘 또는 내일 강수확률(%)과 최고기온을 Open-Meteo 예보로 가져온다.',
+    description: '그 지역의 오늘 또는 내일 날씨(맑음·비 등), 강수확률(%), 최저/최고기온, 최대 풍속(km/h)을 Open-Meteo 예보로 가져온다.',
     input_schema: {
       type: 'object',
       properties: {

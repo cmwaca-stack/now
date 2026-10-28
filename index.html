@@ -82,7 +82,7 @@
             if (d.steps && d.steps.length)
                 html += `<div class="card"><h3>🔍 에이전트가 한 일</h3>${d.steps.map(s => `<div class="step">• ${esc(s.text)}</div>`).join("")}</div>`
             if (d.weather && d.weather.ok)
-                html += `<div class="card"><h3>☁️ 날씨</h3>${esc(d.weather.area)} ${esc(d.weather.day)} · 강수확률 ${esc(d.weather.rain_prob)}% · 최고 ${esc(d.weather.tmax)}℃</div>`
+                html += `<div class="card"><h3>☁️ 날씨</h3>${esc(d.weather.area)} ${esc(d.weather.day)} · ${esc(d.weather.sky)}<br>강수확률 ${esc(d.weather.rain_prob)}% · ${esc(d.weather.tmin)}~${esc(d.weather.tmax)}℃ · 최대 풍속 ${esc(d.weather.wind)}km/h</div>`
             if (d.places && d.places.length) {
                 html += `<div class="card"><h3>📍 추천 장소</h3>${d.places.map((p, i) =>
                     `<div class="place" data-i="${i}"><b>${esc(p.name)}</b>` +
